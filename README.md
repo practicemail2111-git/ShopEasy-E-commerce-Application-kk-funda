@@ -291,13 +291,13 @@ SESSION_FILE_DIR=/tmp/flask_sessions
 3. **Docker Deployment**
 ```bash
 # Build and start containers
-docker compose -f docker/docker-compose.yaml up --build
+docker-compose -f docker/docker-compose.yaml up --build
 
 # Run in background
-docker compose -f docker/docker-compose.yaml up --build -d
+docker-compose -f docker/docker-compose.yaml up --build -d
 
 # View logs
-docker compose -f docker/docker-compose.yaml logs -f
+docker-compose -f docker/docker-compose.yaml logs -f
 ```
 
 ### 6.3 Container Structure
@@ -351,28 +351,28 @@ graph TB
 #### Database Connection Issues
 ```bash
 # Check database container
-docker compose -f docker/docker-compose.yaml ps db
+docker-compose -f docker/docker-compose.yaml ps db
 
 # View database logs
-docker compose -f docker/docker-compose.yaml logs db
+docker-compose -f docker/docker-compose.yaml logs db
 ```
 
 #### Session Issues
 ```bash
 # Check session directory
-docker compose -f docker/docker-compose.yaml exec backend ls -la /tmp/flask_sessions
+docker-compose -f docker/docker-compose.yaml exec backend ls -la /tmp/flask_sessions
 
 # Clear sessions
-docker compose -f docker/docker-compose.yaml exec backend rm -rf /tmp/flask_sessions/*
+docker-compose -f docker/docker-compose.yaml exec backend rm -rf /tmp/flask_sessions/*
 ```
 
 ### 9.2 Debug Commands
 ```bash
 # Backend shell access
-docker compose -f docker/docker-compose.yaml exec backend bash
+docker-compose -f docker/docker-compose.yaml exec backend bash
 
 # Database access
-docker compose -f docker/docker-compose.yaml exec db mysql -u subbu -p
+docker-compose -f docker/docker-compose.yaml exec db mysql -u subbu -p
 ```
 
 ## 10. Development Guidelines
@@ -454,16 +454,16 @@ shopeasy/
 4. **Docker Compose Deployment**
 ```bash
 # Build and start containers
-docker compose -f docker/docker-compose.yaml up --build
+docker-compose -f docker/docker-compose.yaml up --build
 
 # To run in detached mode
-docker compose -f docker/docker-compose.yaml up --build -d
+docker-compose -f docker/docker-compose.yaml up --build -d
 
 # To stop the containers
-docker compose -f docker/docker-compose.yaml down
+docker-compose -f docker/docker-compose.yaml down
 
 # To view logs
-docker compose -f docker/docker-compose.yaml logs -f
+docker-compose -f docker/docker-compose.yaml logs -f
 ```
 
 5. **Database Initialization**
@@ -478,23 +478,23 @@ docker compose -f docker/docker-compose.yaml logs -f
 - Access the application: http://localhost:5000
 - Check container status:
 ```bash
-docker compose -f docker/docker-compose.yaml ps
+docker-compose -f docker/docker-compose.yaml ps
 ```
 
 7. **Troubleshooting Commands**
 ```bash
 # Check backend logs
-docker compose -f docker/docker-compose.yaml logs -f backend
+docker-compose -f docker/docker-compose.yaml logs -f backend
 
 # Check database logs
-docker compose -f docker/docker-compose.yaml logs -f db
+docker-compose -f docker/docker-compose.yaml logs -f db
 
 # Restart specific service
-docker compose -f docker/docker-compose.yaml restart backend
+docker-compose -f docker/docker-compose.yaml restart backend
 
 # Remove volumes and clean start
-docker compose -f docker/docker-compose.yaml down -v
-docker compose -f docker/docker-compose.yaml up --build
+docker -compose -f docker/docker-compose.yaml down -v
+docker-compose -f docker/docker-compose.yaml up --build
 ```
 
 ### 11.3 Initial Data and Testing
