@@ -1,0 +1,75 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'maven'
+    }
+
+    stages {
+        // Checkout Code
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'github', // 👈 Your GitHub PAT credential ID
+                    url: 'https://github.com/practicemail2111-git/ShopEasy-E-commerce-Application-kk-funda.git'
+            }
+        }
+
+        // Build the Maven Project
+        stage('Build') {
+            steps {
+                sh "mvn clean package"
+            }
+        }
+
+        // File System Security Scan using Trivy
+        stage('File System Trivy Scan') {
+            steps {
+                script {
+                    def status = sh(script: "trivy fs --format table -o trivy-fs-report.html .", returnStatus: true)
+                    if (status != 0) {
+                        error "Trivy scan failed with exit code ${status}"
+                    } else {
+                        echo "Trivy scan completed successfully."
+                    }
+                }
+            }
+        }
+
+        // Code Quality Analysis with SonarQube
+        stage('SonarQube') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh """
+                    mvn sonar:sonar \
+                        -Dsonar.projectKey=spring-boot-mongo \
+                        -Dsonar.projectName='Spring Boot Mongo Project' \
+                        -Dsonar.host.url=http://18.142.245.25:9000/
+                    """
+                }
+            }
+        }
+
+        // Build Docker Image and Tag
+        stage('Build & Tag Docker Image') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockerhub-token') { // 👈 Your Docker Hub PAT credential ID
+                        sh "docker build -t practicemail2111/mongospring:latest ."
+                    }
+                }
+            }
+        }
+
+        // Push Docker Image to Registry
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockerhub-token') {
+                        sh "docker push practicemail2111/mongospring:latest"
+                    }
+                }
+            }
+        }
+    }
+}
