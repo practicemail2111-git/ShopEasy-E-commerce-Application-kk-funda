@@ -34,27 +34,26 @@ pipeline {
 
         // 🐳 Build Docker Image
         stage('Build Docker Image') {
-            steps {
-                dir('backend') { // 👈 ensure Dockerfile is inside backend/
-                    script {
-                        withDockerRegistry(credentialsId: 'dckr_pat_OKaZdbdCmkWUSNpQX4deOwz6eKw') {
-                            sh "docker build -t ${DOCKER_IMAGE} ."
-                        }
-                    }
+    steps {
+        dir('backend') {
+            script {
+                withDockerRegistry(credentialsId: 'dockerhub') {
+                    sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
+    }
+}
 
-        // 🚀 Push Docker Image to Docker Hub
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'dckr_pat_OKaZdbdCmkWUSNpQX4deOwz6eKw') {
-                        sh "docker push ${DOCKER_IMAGE}"
-                    }
-                }
+stage('Push Docker Image') {
+    steps {
+        script {
+            withDockerRegistry(credentialsId: 'dockerhub') {
+                sh "docker push ${DOCKER_IMAGE}"
             }
         }
+    }
+}
 
         // 📊 Optional: SonarQube Code Quality Check (skip if not configured)
         stage('SonarQube Analysis') {
